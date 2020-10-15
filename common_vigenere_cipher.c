@@ -1,19 +1,21 @@
-#include "vigenere_cipher.h"
+#include "common_vigenere_cipher.h"
 #include <string.h>
 #include <stdio.h>
 
 #define SUCCESS 0
-#define INSUF_BUFF_SIZE 1
+#define INSUF_BUFF_SIZE -1
 #define VOCAB_SIZE 256
 
-char* extend_key (char* key, int length);
+char* _extendKey (char* key, int length);
 
-int vigenere_encode (char *input, char *output, size_t buff_size, char* key) {
+int vigenereEncode (const char *input, char *output,
+                    size_t buff_size, char* key) {
     int length = (int)strlen(input);
     if (length+1 > buff_size){
+        fprintf(stderr, "Error: tamaño insuficiente de buffer.");
         return INSUF_BUFF_SIZE;
     }
-    char* extended_key = extend_key(key, length);
+    char* extended_key = _extendKey(key, length);
     for (int i=0; i<length; i++){
         output[i] = (char)((input[i]+extended_key[i])%VOCAB_SIZE);
     }
@@ -23,12 +25,14 @@ int vigenere_encode (char *input, char *output, size_t buff_size, char* key) {
 }
 
 
-int vigenere_decode (char *input, char *output, size_t buff_size, char* key) {
+int vigenereDecode (const char *input, char *output,
+                    size_t buff_size, char* key) {
     int length = (int)strlen(input);
     if (length+1 > buff_size){
+        fprintf(stderr, "Error: tamaño insuficiente de buffer.");
         return INSUF_BUFF_SIZE;
     }
-    char* extended_key = extend_key(key, length);
+    char* extended_key = _extendKey(key, length);
     for (int i=0; i<length; i++){
         output[i] = (char)((input[i]-extended_key[i])%VOCAB_SIZE);
     }
@@ -37,9 +41,10 @@ int vigenere_decode (char *input, char *output, size_t buff_size, char* key) {
     return SUCCESS;
 }
 
+//---------------------------- Funciones privadas ----------------------------//
 
-char* extend_key (char* key, int length){
-    int key_length = strlen(key);
+char* _extendKey (char* key, int length){
+    int key_length = (int)strlen(key);
     char* extended_key = (char*)malloc((length+1)-sizeof(char));
 
     for (int i=0; i<length; i++){
