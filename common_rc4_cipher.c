@@ -9,15 +9,17 @@
 #define VOCAB_SIZE 256
 
 static void _initializeS(int *S);
-static void _initializeT(char *T, char*key);
+static void _initializeT(char *T, const char *key);
 static void _KSA(int *S, char *T);
 static void _PRGA(int *S, char *key_stream, int length);
-static void _generateKeyStream(char* key_stream, char* original_key, int length);
+static void _generateKeyStream(char* key_stream, const char *original_key,
+                               int length);
 static void _swap(int *vector, int i, int j);
-static void _encode(const char *input, char* output, char* key, int length);
+static void _encode(const char *input, char* output, const char *key, int length);
 
 
-int rc4Encode(const char *input, char *output, size_t buff_size, char *key) {
+int rc4Encode(const char *input, char *output, size_t buff_size,
+              const char *key) {
     int length = (int)strlen(input);
 
     if (length+1 > buff_size){
@@ -36,7 +38,8 @@ int rc4Encode(const char *input, char *output, size_t buff_size, char *key) {
     }
 }
 
-int rc4Decode(const char *input, char *output, size_t buff_size, char *key) {
+int rc4Decode(const char *input, char *output, size_t buff_size,
+              const char *key) {
     return rc4Encode(input, output, buff_size, key);
 }
 
@@ -50,7 +53,7 @@ static void _initializeS(int *S){
     }
 }
 
-static void _initializeT(char *T, char*key){
+static void _initializeT(char *T, const char *key){
     int length = (int)strlen(key);
     for (int i=0; i<VECTOR_SIZE; i++){
         T[i] = key[i%length];
@@ -79,7 +82,7 @@ static void _PRGA(int *S, char *key_stream, int length){
 }
 
 static void _generateKeyStream(char* key_stream,
-                               char* original_key, int length){
+                               const char *original_key, int length){
     int S_vector[VECTOR_SIZE];
     char T_vector[VECTOR_SIZE];
     _initializeS(S_vector);
@@ -88,7 +91,7 @@ static void _generateKeyStream(char* key_stream,
     _PRGA(S_vector, key_stream, length);
 }
 
-static void _encode(const char *input, char* output, char* key, int length){
+static void _encode(const char *input, char* output, const char *key, int length){
     for (int i = 0; i < length; i++) {
         output[i] = input[i] ^ key[i];
     }

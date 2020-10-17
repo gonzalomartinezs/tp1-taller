@@ -8,7 +8,7 @@ typedef struct{
 
 int testerCreate(Tester* tester);
 
-int testerDestroy(Tester* tester);
+void testerDestroy(Tester* tester);
 
 void testerEqualInts(int expected, int obtained, Tester* tester);
 

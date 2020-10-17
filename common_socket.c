@@ -97,8 +97,7 @@ int socketSend(Socket* self, const void* buffer, size_t length) {
     int sent;
 
     while (bytes_sent < length && !error_at_sending) {
-        sent = send(self->fd, address,
-                    length - bytes_sent, MSG_NOSIGNAL);
+        sent = send(self->fd, address,length-bytes_sent, MSG_NOSIGNAL);
         if (sent == ERROR) {
             fprintf(stderr,"Error: %s\n", strerror(errno));
             error_at_sending = true;
@@ -111,25 +110,25 @@ int socketSend(Socket* self, const void* buffer, size_t length) {
 }
 
 int socketReceive(Socket* self, void* buffer, size_t length) {
-    bool valid_socket = true;
+    bool valid_socket = true, zero_bytes_recv = false;
     void* address = buffer;
     int bytes_received = 0;
     int received;
 
-    while (bytes_received < length && valid_socket) {
+    while (bytes_received < length && valid_socket && !zero_bytes_recv) {
         received = recv(self->fd, address,
                         length - bytes_received, MSG_NOSIGNAL);
         if (received == ERROR) {
             fprintf(stderr, "Error: %s\n", strerror(errno));
             valid_socket = false;
         } else if (received == 0){
-            valid_socket = false;
+            zero_bytes_recv = true;
         }else {
             bytes_received += received;
             address += received;
         }
     }
-    return valid_socket? ERROR : bytes_received;
+    return valid_socket?  bytes_received: ERROR;
 }
 
 void socketRelease(Socket* self) {

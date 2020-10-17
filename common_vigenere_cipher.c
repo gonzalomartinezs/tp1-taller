@@ -6,27 +6,28 @@
 #define INSUF_BUFF_SIZE -1
 #define VOCAB_SIZE 256
 
-char* _extendKey (char* key, int length);
+// Repite la clave hasta alcanzar la longitd del mensaje.
+char* _extendKey (const char *key, int length);
 
 int vigenereEncode (const char *input, char *output,
-                    size_t buff_size, char* key) {
+                    size_t buff_size, const char *key) {
     int length = (int)strlen(input);
     if (length+1 > buff_size){
         fprintf(stderr, "Error: tamaño insuficiente de buffer.");
         return INSUF_BUFF_SIZE;
     }
-    char* extended_key = _extendKey(key, length);
+    char* extended_key = _extendKey((char*)key, length);
     for (int i=0; i<length; i++){
         output[i] = (char)((input[i]+extended_key[i])%VOCAB_SIZE);
     }
-    output[length] = '\0';
+    //output[length] = '\0';
     free(extended_key);
     return SUCCESS;
 }
 
 
 int vigenereDecode (const char *input, char *output,
-                    size_t buff_size, char* key) {
+                    size_t buff_size, const char *key) {
     int length = (int)strlen(input);
     if (length+1 > buff_size){
         fprintf(stderr, "Error: tamaño insuficiente de buffer.");
@@ -36,14 +37,14 @@ int vigenereDecode (const char *input, char *output,
     for (int i=0; i<length; i++){
         output[i] = (char)((input[i]-extended_key[i])%VOCAB_SIZE);
     }
-    output[length] = '\0';
+    //output[length] = '\0';
     free(extended_key);
     return SUCCESS;
 }
 
 //---------------------------- Funciones privadas ----------------------------//
 
-char* _extendKey (char* key, int length){
+char* _extendKey (const char *key, int length){
     int key_length = (int)strlen(key);
     char* extended_key = (char*)malloc((length+1)-sizeof(char));
 

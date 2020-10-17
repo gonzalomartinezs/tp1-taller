@@ -10,8 +10,8 @@ int testerCreate(Tester* tester){
     return SUCCESS;
 }
 
-int testerDestroy(Tester* tester){
-    return SUCCESS;
+void testerDestroy(Tester* tester){
+    //do nothing
 }
 
 void testerEqualInts(int expected, int obtained, Tester *tester) {
@@ -55,8 +55,8 @@ void testerEqualPointers(void *expected, void *obtained, Tester *tester) {
 }
 
 void testerSummarize(Tester *tester) {
-    printf("\nSe obtuvieron %i exitos en %i pruebas (%.2f%)",
-           tester->exitos, tester->pruebas, ((float)tester->exitos/tester->pruebas)*100);
+    printf("\nSe obtuvieron %i exitos en %i pruebas ( %.2f )",
+           tester->exitos, tester->pruebas, ((float)tester->exitos/(float)tester->pruebas)*100);
 }
 
 void testerNotifyError(int error_code) {

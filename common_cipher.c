@@ -27,12 +27,12 @@ int cipherInit(Cipher *cipher, const char *method) {
 }
 
 int cipherEncode(Cipher *cipher, const char *input, char *output,
-                 size_t buff_size, void* key) {
+                 size_t buff_size, const char *key) {
     return cipher->encode(input,output,buff_size,key);
 }
 
 int cipherDecode(Cipher *cipher, const char *input, char *output,
-                 size_t buff_size, void* key) {
+                 size_t buff_size, const char *key) {
     return cipher->decode(input,output,buff_size,key);
 }
 
