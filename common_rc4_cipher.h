@@ -1,17 +1,23 @@
 #ifndef TP1_COMMON_RC4_CIPHER_H
 #define TP1_COMMON_RC4_CIPHER_H
 #include <stdlib.h>
+#include "common_cipher.h"
 
-// Pre: el buffer size de 'output' es mayor o igual al de 'input'.
-// Post: toma el mensaje de 'input' y coloca su codificación
-//       RC4 en 'output' usando 'key' como clave.
-//       Retorna 0 en caso de éxito, 1 caso contrario.
-int rc4Encode(const char *input, char* output, size_t buff_size, const char *key);
+typedef struct{
+    EncryptFunc encode;
+    EncryptFunc decode;
+}RC4Cipher;
 
-// Pre: el buffer size de 'output' es mayor o igual al de 'input'.
-// Post: toma el mensaje codificado 'input' y coloca su
-//       decodificación RC4 en 'output' usando 'key' como clave.
-//       Retorna 0 en caso de éxito, 1 caso contrario.
-int rc4Decode(const char *input, char* output, size_t buff_size, const char *key);
+// Inicializa el cifrador.
+void RC4CipherInit(RC4Cipher* rc4);
+
+// Retorna un puntero a la función de encriptación rc4
+EncryptFunc getRC4Encoding(RC4Cipher* rc4);
+
+// Retorna un puntero a la función de desencriptación rc4
+EncryptFunc getRC4Decoding(RC4Cipher* rc4);
+
+// Libera los recursos del cifrador.
+void RC4CipherRelease(RC4Cipher* rc4);
 
 #endif //TP1_COMMON_RC4_CIPHER_H

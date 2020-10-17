@@ -16,7 +16,7 @@ int serverBindAndListen(Server* server, int acceptance);
 int serverAccept(Server server, Socket *peer);
 
 int serverReceiveAndDecrypt(Socket *peer, FILE* output_file,
-                            const char* method, const char* key);
+                            const char* recv_method, const char* recv_key);
 
 void serverDisconnectAndRelease(Server* server);
 

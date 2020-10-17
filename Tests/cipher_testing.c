@@ -1,9 +1,10 @@
 #include <stdio.h>
+#include <string.h>
 #include "../common_cipher.h"
 #include "testing.h"
 #define CAESAR_METHOD "cesar"
 #define SUCCESS 0
-#define ERROR 1
+#define ERROR -1
 
 void casoBasicoDeEncriptacionCaesar(Tester* tester){
 
@@ -13,7 +14,8 @@ void casoBasicoDeEncriptacionCaesar(Tester* tester){
            tester->pruebas);
     char string_prueba[] = "ABCD";
     char string_codif[5];
-    int encoding = cipherEncode(&cipher,string_prueba, string_codif, sizeof(string_codif), (void*)5);
+    int encoding = cipherEncode(&cipher, string_prueba, strlen(string_prueba),
+                                string_codif, sizeof(string_codif), "5");
 
     if (encoding == SUCCESS){
         testerEqualStrings("FGHI", string_codif, tester);
@@ -30,7 +32,8 @@ void casoBasicoDeDesencriptacionCaesar(Tester* tester){
            tester->pruebas);
     char string_prueba[] = "FGHI";
     char string_codif[5];
-    int decoding = cipherDecode(&cipher,string_prueba, string_codif, sizeof(string_codif), (void*)5);
+    int decoding = cipherDecode(&cipher, string_prueba, strlen(string_prueba),
+                                string_codif, sizeof(string_codif), "5");
 
     if (decoding == SUCCESS){
         testerEqualStrings("ABCD", string_codif, tester);
@@ -48,10 +51,12 @@ void encriptoYDesencriptoConCaesarObtengoMismoValor(Tester* tester){
     char string_prueba[] = "ABCD";
     char string_codif[5];
 
-    int encoding = cipherEncode(&cipher,string_prueba, string_codif, sizeof(string_codif), (void*)10);
-    int decoding = cipherDecode(&cipher,string_codif, string_codif, sizeof(string_codif), (void*)10);
+    int encoding = cipherEncode(&cipher, string_prueba, strlen(string_prueba),
+                                string_codif, sizeof(string_codif), "10");
+    int decoding = cipherDecode(&cipher, string_codif, strlen(string_codif),
+                                string_codif, sizeof(string_codif), "10");
 
-    if ((encoding == SUCCESS) & (decoding == SUCCESS)){
+    if ((encoding == SUCCESS) && (decoding == SUCCESS)){
         testerEqualStrings("ABCD", string_codif, tester);
     } else {
         (encoding == ERROR) ? testerNotifyError(encoding) : NULL;
@@ -67,7 +72,8 @@ void encriptacionCaesarConKey256(Tester* tester){
            tester->pruebas);
     char string_prueba[] = "ABCD";
     char string_codif[5];
-    int encoding = cipherEncode(&cipher,string_prueba, string_codif, sizeof(string_codif), (void*)256);
+    int encoding = cipherEncode(&cipher, string_prueba, strlen(string_prueba), string_codif,
+                                sizeof(string_codif), "256");
 
     if (encoding == SUCCESS){
         testerEqualStrings("ABCD", string_codif, tester);
@@ -84,7 +90,8 @@ void desencriptacionCaesarConKey256(Tester* tester){
            tester->pruebas);
     char string_prueba[] = "FGHI";
     char string_codif[5];
-    int decoding = cipherDecode(&cipher,string_prueba, string_codif, sizeof(string_codif), (void*)256);
+    int decoding = cipherDecode(&cipher, string_prueba, strlen(string_prueba), string_codif,
+                                sizeof(string_codif), "256");
 
     if (decoding == SUCCESS){
         testerEqualStrings("FGHI", string_codif, tester);
@@ -101,7 +108,8 @@ void encriptacionCaesarConBufferInsuficiente(Tester* tester){
            tester->pruebas);
     char string_prueba[] = "FGHI";
     char string_codif[2];
-    int encoding = cipherEncode(&cipher,string_prueba, string_codif, sizeof(string_codif), (void*)256);
+    int encoding = cipherEncode(&cipher, string_prueba, strlen(string_prueba), string_codif,
+                                sizeof(string_codif), "256");
     testerEqualInts(ERROR, encoding, tester);
 }
 
@@ -113,7 +121,8 @@ void desencriptacionCaesarConBufferInsuficiente(Tester* tester){
            tester->pruebas);
     char string_prueba[] = "FGHI";
     char string_codif[2];
-    int decoding = cipherDecode(&cipher,string_prueba, string_codif, sizeof(string_codif), (void*)256);
+    int decoding = cipherDecode(&cipher, string_prueba, strlen(string_prueba), string_codif,
+                                sizeof(string_codif), "256");
 
     testerEqualInts(ERROR, decoding, tester);
 }

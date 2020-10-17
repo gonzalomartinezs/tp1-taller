@@ -1,5 +1,6 @@
+#define _POSIX_C_SOURCE 200112L
+
 #include "common_socket.h"
-//#include <sys/types.h>
 #include <sys/socket.h>
 #include <netdb.h>
 #include <unistd.h>
@@ -92,8 +93,8 @@ int socketConnect(Socket* self, const char* host, const char* service) {
 
 int socketSend(Socket* self, const void* buffer, size_t length) {
     bool error_at_sending = false;
-    const void* address = buffer;
-    int bytes_sent = 0;
+    uint8_t* address = (uint8_t*)buffer;  // casteo para realizar operaciones
+    int bytes_sent = 0;                   // ariméticas con dicha  dirección
     int sent;
 
     while (bytes_sent < length && !error_at_sending) {
@@ -111,8 +112,8 @@ int socketSend(Socket* self, const void* buffer, size_t length) {
 
 int socketReceive(Socket* self, void* buffer, size_t length) {
     bool valid_socket = true, zero_bytes_recv = false;
-    void* address = buffer;
-    int bytes_received = 0;
+    uint8_t* address = (uint8_t*)buffer;  // casteo para realizar operaciones
+    int bytes_received = 0;               // ariméticas con dicha  dirección
     int received;
 
     while (bytes_received < length && valid_socket && !zero_bytes_recv) {

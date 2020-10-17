@@ -1,10 +1,13 @@
 #include <stdio.h>
 #include "server.h"
-#define ERROR -1
+
+#define SUCCESS 0
+#define ERROR 1
+#define ARGS_AMOUNT 4
 
 int main(int argc, char** argv) {
-    if(argc !=3){
-        fprintf(stderr,"Cantidad de argumentos invalida\n");
+    if (argc != ARGS_AMOUNT){
+        fprintf(stderr,"Cantidad de argumentos errónea.\n");
         return ERROR;
     }
 
@@ -15,11 +18,13 @@ int main(int argc, char** argv) {
     Socket peer;
     socketInit(&peer);
     serverAccept(server, &peer);
-    if(serverReceiveAndDecrypt(&peer, stdout, "vigenere", argv[2]) == ERROR){
+
+    int status = serverReceiveAndDecrypt(&peer, stdout, argv[2], argv[3]);
+    if (status == SUCCESS){
+        socketRelease(&peer);
         serverDisconnectAndRelease(&server);
-        return ERROR;
+        return SUCCESS;
     }
-    socketRelease(&peer);
     serverDisconnectAndRelease(&server);
-    return 0;
+    return ERROR;
 }

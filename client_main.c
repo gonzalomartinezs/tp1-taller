@@ -1,20 +1,26 @@
 #include "client.h"
 #include <stdio.h>
 
-#define ERROR -1
+#define SUCCESS 0
+#define ERROR 1
+#define ARGS_AMOUNT 5
 
 int main(int argc, char** argv){
-    if(argc !=4){
-        printf("Cantidad de argumentos erronea.\n");
+    if (argc != ARGS_AMOUNT){
+        fprintf(stderr,"Cantidad de argumentos errónea.\n");
         return ERROR;
     }
+
     Client client;
     clientInit(&client, argv[1], argv[2]);
     clientConnect(&client);
-    if(clientEncryptAndSend(&client, stdin, "vigenere", argv[3])==-1){
-        return -1;
+
+    int status = clientEncryptAndSend(&client, stdin, argv[3], argv[4]);
+
+    if (status == SUCCESS){
+        clientDisconnectAndRelease(&client);
+        return SUCCESS;
     }
-    clientDisconnectAndRelease(&client);
-    return 0;
+    return ERROR;
 }
 

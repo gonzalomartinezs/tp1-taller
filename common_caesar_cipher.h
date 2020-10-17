@@ -2,17 +2,23 @@
 #define TP1_COMMON_CAESAR_CIPHER_H
 
 #include <stdlib.h>
+#include "common_cipher.h"
 
-// Pre: el buffer size de 'output' es mayor o igual al de 'input'.
-// Post: toma el mensaje de 'input' y coloca su codificación
-//       Cesar en 'output' usando 'key' como clave.
-//       Retorna 0 en caso de éxito, 1 caso contrario.
-int caesarEncode(const char *input, char* output, size_t buff_size, const char *key);
+typedef struct{
+    EncryptFunc encode;
+    EncryptFunc decode;
+}CaesarCipher;
 
-// Pre: el buffer size de 'output' es mayor o igual al de 'input'.
-// Post: toma el mensaje codificado 'input' y coloca su
-//       decodificación Cesar en 'output' usando 'key' como clave.
-//       Retorna 0 en caso de éxito, 1 caso contrario.
-int caesarDecode(const char *input, char* output, size_t buff_size, const char *key);
+// Inicializa el cifrador.
+void caesarCipherInit(CaesarCipher* caesar);
+
+// Retorna un puntero a la función de encriptación Caesar
+EncryptFunc getCaesarEncoding(CaesarCipher* caesar);
+
+// Retorna un puntero a la función de desencriptación Caesar
+EncryptFunc getCaesarDecoding(CaesarCipher* caesar);
+
+// Libera los recursos del cifrador.
+void caesarCipherRelease(CaesarCipher* caesar);
 
 #endif
