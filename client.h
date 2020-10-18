@@ -5,7 +5,7 @@
 #include "common_socket.h"
 
 typedef struct{
-    Socket* socket;
+    Socket socket;
     const char* host;
     const char* service;
 }Client;

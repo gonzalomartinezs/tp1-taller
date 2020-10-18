@@ -98,12 +98,11 @@ static void _KSA(int *S, char *T){
 static void _PRGA(int *S, char *key_stream, int length){
     int i = 0;
     int j = 0;
-    int a;
     for (int k=0; k<length; k++){
         i = (i + 1)%VOCAB_SIZE;
         j = (j + S[i])%VOCAB_SIZE;
         _swap(S, i, j);
-        a =  (S[i] + S[j])%VOCAB_SIZE;
+        int a =  (S[i] + S[j])%VOCAB_SIZE;
         key_stream[k] = (char)S[a];
     }
 }

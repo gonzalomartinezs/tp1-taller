@@ -5,7 +5,7 @@
 #include <stdio.h>
 
 typedef struct{
-    Socket* socket;
+    Socket socket;
     const char* service;
 }Server;
 

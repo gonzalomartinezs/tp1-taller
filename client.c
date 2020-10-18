@@ -18,8 +18,8 @@ int _encodeAndSend(Client* client, Cipher* cipher, FILE* file, const char *key);
 
 void clientInit(Client *client, const char *host, const char *service) {
     Socket socket;
-    client->socket = &socket;
-    socketInit(client->socket);
+    socketInit(&socket);
+    client->socket = socket;
     client->host = host;
     client->service = service;
 }
@@ -42,11 +42,11 @@ int clientEncryptAndSend(Client *client, FILE *input_file,
 }
 
 int clientConnect(Client *client) {
-    return socketConnect(client->socket, client->host, client->service);
+    return socketConnect(&(client->socket), client->host, client->service);
 }
 
 void clientDisconnectAndRelease(Client *client) {
-    socketRelease(client->socket);
+    socketRelease(&(client->socket));
 }
 
 //---------------------------- Funciones privadas ----------------------------//
@@ -67,19 +67,18 @@ void _extractOption(const char *recv_option, char *option){
 
 int _encodeAndSend(Client* client, Cipher* cipher, FILE* file, const char *key){
     int info_sent = 0;
-    int status, sent;
-    size_t read;
+    int sent;
     char input_chunk[CHUNK_SIZE], output_chunk[CHUNK_SIZE+1];
     memset(input_chunk, 0, CHUNK_SIZE);
     memset(output_chunk, 0, CHUNK_SIZE+1);
 
     while (!feof(file)){
-        read = fread(input_chunk, sizeof(char), CHUNK_SIZE, file);
-        status = cipherEncode(cipher, input_chunk, read, output_chunk,
+        size_t read = fread(input_chunk, sizeof(char), CHUNK_SIZE, file);
+        int status = cipherEncode(cipher, input_chunk, read, output_chunk,
                               CHUNK_SIZE+1, key);
 
         if (status != ERROR) {
-            sent = socketSend(client->socket, output_chunk, read);
+            sent = socketSend(&(client->socket), output_chunk, read);
         }
         if (status == ERROR || sent == ERROR){
             clientDisconnectAndRelease(client);

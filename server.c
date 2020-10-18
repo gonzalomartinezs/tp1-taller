@@ -19,17 +19,17 @@ static int _receiveAndDecode(Socket *peer, Cipher *cipher, FILE *output_file,
 
 void serverInit(Server *server, const char *service) {
     Socket socket;
-    server->socket = &socket;
-    socketInit(server->socket);
+    socketInit(&socket);
+    server->socket = socket;
     server->service = service;
 }
 
 int serverBindAndListen(Server *server, int acceptance) {
-    return socketBindAndListen(server->socket, server->service, acceptance);
+    return socketBindAndListen(&(server->socket), server->service, acceptance);
 }
 
 int serverAccept(Server server, Socket *peer) {
-    return socketAccept(server.socket, peer);
+    return socketAccept(&(server.socket), peer);
 }
 
 int serverReceiveAndDecrypt(Socket *peer, FILE *output_file,
@@ -49,7 +49,7 @@ int serverReceiveAndDecrypt(Socket *peer, FILE *output_file,
 }
 
 void serverDisconnectAndRelease(Server *server) {
-    socketRelease(server->socket);
+    socketRelease(&(server->socket));
 }
 
 
@@ -86,7 +86,7 @@ static int _receiveAndDecode(Socket *peer, Cipher *cipher, FILE *output_file,
                 fwrite(output_chunk, sizeof(char), received, output_file);
             }
         }
-        if (status == ERROR || received == ERROR){
+        if (received == ERROR || status == ERROR){
             socketRelease(peer);
             return ERROR;
         }

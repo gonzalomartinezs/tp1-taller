@@ -42,12 +42,11 @@ int socketBindAndListen(Socket* self,
                         const char* service, int acceptance) {
     struct addrinfo hints;
     struct addrinfo *results;
-    int status;
 
     _setHints(&hints);
     hints.ai_flags = AI_PASSIVE;
 
-    status = getaddrinfo(NULL, service, &hints, &results);
+    int status = getaddrinfo(NULL, service, &hints, &results);
     if (status != SUCCESS) {
         fprintf(stderr, "Error en getaddrinfo: %s.\n",
                 gai_strerror(status));
@@ -76,12 +75,11 @@ int socketAccept(Socket* listener, Socket* peer) {
 int socketConnect(Socket* self, const char* host, const char* service) {
     struct addrinfo hints;
     struct addrinfo *results;
-    int status;
 
     _setHints(&hints);
     hints.ai_flags = 0;
 
-    status = getaddrinfo(host, service, &hints, &results);
+    int status = getaddrinfo(host, service, &hints, &results);
     if (status != SUCCESS) {
         fprintf(stderr, "Error en getaddrinfo: %s.\n",
                 gai_strerror(status));
@@ -95,10 +93,9 @@ int socketSend(Socket* self, const void* buffer, size_t length) {
     bool error_at_sending = false;
     uint8_t* address = (uint8_t*)buffer;  // casteo para realizar operaciones
     int bytes_sent = 0;                   // ariméticas con dicha  dirección
-    int sent;
 
     while (bytes_sent < length && !error_at_sending) {
-        sent = send(self->fd, address,length-bytes_sent, MSG_NOSIGNAL);
+        int sent = send(self->fd, address,length-bytes_sent, MSG_NOSIGNAL);
         if (sent == ERROR) {
             fprintf(stderr,"Error: %s\n", strerror(errno));
             error_at_sending = true;
@@ -114,10 +111,9 @@ int socketReceive(Socket* self, void* buffer, size_t length) {
     bool valid_socket = true, zero_bytes_recv = false;
     uint8_t* address = (uint8_t*)buffer;  // casteo para realizar operaciones
     int bytes_received = 0;               // ariméticas con dicha  dirección
-    int received;
 
     while (bytes_received < length && valid_socket && !zero_bytes_recv) {
-        received = recv(self->fd, address,
+        int received = recv(self->fd, address,
                         length - bytes_received, MSG_NOSIGNAL);
         if (received == ERROR) {
             fprintf(stderr, "Error: %s\n", strerror(errno));
