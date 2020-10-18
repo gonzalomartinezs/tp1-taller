@@ -61,6 +61,7 @@ void _initializeWithCaesar(Cipher *cipher) {
     caesarCipherInit(&caesar);
     cipher->encode = getCaesarEncoding(&caesar);
     cipher->decode = getCaesarDecoding(&caesar);
+    caesarCipherRelease(&caesar);
 }
 
 void _initializeWithVigenere(Cipher *cipher) {
@@ -68,6 +69,7 @@ void _initializeWithVigenere(Cipher *cipher) {
     vigenereCipherInit(&vigenere);
     cipher->encode = getVigenereEncoding(&vigenere);
     cipher->decode = getVigenereDecoding(&vigenere);
+    vigenereCipherRelease(&vigenere);
 }
 
 void _initializeWithRC4(Cipher *cipher) {
@@ -75,4 +77,5 @@ void _initializeWithRC4(Cipher *cipher) {
     RC4CipherInit(&rc4);
     cipher->encode = getRC4Encoding(&rc4);
     cipher->decode = getRC4Decoding(&rc4);
+    RC4CipherRelease(&rc4);
 }
