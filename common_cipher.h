@@ -10,8 +10,6 @@ typedef int (*EncryptFunc)(const char* input, size_t length, char* output,
 typedef struct {
     EncryptFunc encode;
     EncryptFunc decode;
-    char method[METHOD_LENGTH];
-    void* method_cipher;
 }Cipher;
 
 // Inicializa el cifrador de acuerdo al método recibido.

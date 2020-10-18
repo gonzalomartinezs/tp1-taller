@@ -36,8 +36,6 @@ int cipherInit(Cipher *cipher, const char *method) {
         fprintf(stderr, "Error: Método inválido\n");
         return ERROR;
     }
-    memset(cipher->method, 0, METHOD_LENGTH);
-    strncpy(cipher->method, method, strlen(method));
     return SUCCESS;
 }
 
@@ -52,13 +50,7 @@ int cipherDecode(Cipher *cipher, const char *input, size_t length, char *output,
 }
 
 void cipherRelease(Cipher *cipher) {
-    if (strcmp(cipher->method, CAESAR_NAME) == 0) {
-        caesarCipherRelease((CaesarCipher*)(cipher->method_cipher));
-    } else if (strcmp(cipher->method, VIGENERE_NAME) == 0) {
-        vigenereCipherRelease((VigenereCipher*)(cipher->method_cipher));
-    } else {
-        RC4CipherRelease((RC4Cipher *)(cipher->method_cipher));
-    }
+    //do nothing
 }
 
 
@@ -69,7 +61,6 @@ void _initializeWithCaesar(Cipher *cipher) {
     caesarCipherInit(&caesar);
     cipher->encode = getCaesarEncoding(&caesar);
     cipher->decode = getCaesarDecoding(&caesar);
-    cipher->method_cipher = &caesar;
 }
 
 void _initializeWithVigenere(Cipher *cipher) {
@@ -77,7 +68,6 @@ void _initializeWithVigenere(Cipher *cipher) {
     vigenereCipherInit(&vigenere);
     cipher->encode = getVigenereEncoding(&vigenere);
     cipher->decode = getVigenereDecoding(&vigenere);
-    cipher->method_cipher = &vigenere;
 }
 
 void _initializeWithRC4(Cipher *cipher) {
@@ -85,5 +75,4 @@ void _initializeWithRC4(Cipher *cipher) {
     RC4CipherInit(&rc4);
     cipher->encode = getRC4Encoding(&rc4);
     cipher->decode = getRC4Decoding(&rc4);
-    cipher->method_cipher = &rc4;
 }
