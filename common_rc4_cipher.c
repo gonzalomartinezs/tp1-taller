@@ -13,14 +13,14 @@
 //       RC4 en 'output' usando 'key' como clave.
 //       Retorna 0 en caso de éxito, 1 caso contrario.
 int _rc4Encode(const char *input, size_t length, char *output, size_t buff_size,
-               const char *key);
+               const char *key, void *aux);
 
 // Pre: el buffer size de 'output' es mayor o igual al de 'input'.
 // Post: toma el mensaje codificado 'input' y coloca su
 //       decodificación RC4 en 'output' usando 'key' como clave.
 //       Retorna 0 en caso de éxito, 1 caso contrario.
 int _rc4Decode(const char *input, size_t length, char *output, size_t buff_size,
-               const char *key);
+               const char *key, void *aux);
 
 static void _initializeS(int *S);
 static void _initializeT(char *T, const char *key);
@@ -55,7 +55,7 @@ void RC4CipherRelease(RC4Cipher *rc4) {
 //---------------------------- Funciones privadas ----------------------------//
 
 int _rc4Encode(const char *input, size_t length, char *output, size_t buff_size,
-               const char *key) {
+               const char *key, void *aux) {
     if (length+1 > buff_size){
         fprintf(stderr, "Error: tamaño insuficiente de buffer.");
         return INSUF_BUFF_SIZE;
@@ -69,8 +69,8 @@ int _rc4Encode(const char *input, size_t length, char *output, size_t buff_size,
 }
 
 int _rc4Decode(const char *input, size_t length, char *output, size_t buff_size,
-               const char *key) {
-    return _rc4Encode(input, length, output, buff_size, key);
+               const char *key, void *aux) {
+    return _rc4Encode(input, length, output, buff_size, key, aux);
 }
 
 
