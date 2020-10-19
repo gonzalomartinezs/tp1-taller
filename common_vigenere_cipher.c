@@ -83,7 +83,7 @@ void _extendKey(const char *key, int length, char *extended_key,
     memset(extended_key, 0, MAX_INPUT_SIZE);
 
     int key_length = (int)strlen(key);
-    if(key_length!= 0){
+    if (key_length!= 0){
         int position;
         for (int i=0; i<length; i++){
             position = (*pos_in_key+i)%key_length;
@@ -91,5 +91,4 @@ void _extendKey(const char *key, int length, char *extended_key,
         }
         *pos_in_key = (position+1)%key_length;
     }
-
 }
