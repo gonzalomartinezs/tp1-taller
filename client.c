@@ -56,7 +56,7 @@ void _extractOption(const char *recv_option, char *option){
     int j = 0;
     int length = (int)strlen(recv_option);
     for (int i=0; i<length; i++){
-        if (eq_sign_found){
+        if (eq_sign_found && recv_option[i] != '"'){
             option[j] = recv_option[i];
             j++;
         } else if (recv_option[i]=='='){

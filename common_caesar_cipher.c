@@ -11,14 +11,14 @@
 //       Cesar en 'output' usando 'key' como clave.
 //       Retorna 0 en caso de éxito, 1 caso contrario.
 int _caesarEncode(const char *input, size_t length, char *output,
-                  size_t buff_size, const char *key);
+                  size_t buff_size, const char *key, void *aux);
 
 // Pre: el buffer size de 'output' es mayor o igual al de 'input'.
 // Post: toma el mensaje codificado 'input' y coloca su
 //       decodificación Cesar en 'output' usando 'key' como clave.
 //       Retorna 0 en caso de éxito, 1 caso contrario.
 int _caesarDecode(const char *input, size_t length, char *output,
-                  size_t buff_size, const char *key);
+                  size_t buff_size, const char *key, void *aux);
 
 
 void caesarCipherInit(CaesarCipher *caesar) {
@@ -42,8 +42,9 @@ void caesarCipherRelease(CaesarCipher *caesar) {
 
 //---------------------------- Funciones privadas ----------------------------//
 
-int _caesarEncode(const char *input, size_t length, char *output,
-                  size_t buff_size, const char *key) {
+int
+_caesarEncode(const char *input, size_t length, char *output, size_t buff_size,
+              const char *key, void *aux) {
     int true_key = atoi(key);
     if (length+1 > buff_size){
         fprintf(stderr, "Error: tamaño insuficiente de buffer.");
@@ -56,8 +57,9 @@ int _caesarEncode(const char *input, size_t length, char *output,
 }
 
 
-int _caesarDecode(const char *input, size_t length, char *output,
-                  size_t buff_size, const char *key) {
+int
+_caesarDecode(const char *input, size_t length, char *output, size_t buff_size,
+              const char *key, void *aux) {
     int true_key = atoi(key);
     if (length+1 > buff_size){
         fprintf(stderr, "Error: tamaño insuficiente de buffer.");
