@@ -31,7 +31,6 @@ int clientEncryptAndSend(Client *client, FILE *input_file,
     memset(method, 0, METHOD_SIZE);
     _extractOption(recv_key, key);
     _extractOption(recv_method, method);
-
     Cipher cipher;
     if (cipherInit(&cipher, method) == ERROR){
         return ERROR;
@@ -71,7 +70,6 @@ int _encodeAndSend(Client* client, Cipher* cipher, FILE* file, const char *key){
     char input_chunk[CHUNK_SIZE], output_chunk[CHUNK_SIZE+1];
     memset(input_chunk, 0, CHUNK_SIZE);
     memset(output_chunk, 0, CHUNK_SIZE+1);
-
     while (!feof(file)){
         size_t read = fread(input_chunk, sizeof(char), CHUNK_SIZE, file);
         int status = cipherEncode(cipher, input_chunk, read, output_chunk,

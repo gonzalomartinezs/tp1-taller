@@ -76,7 +76,6 @@ static int _receiveAndDecode(Socket *peer, Cipher *cipher, FILE *output_file,
     char input_chunk[CHUNK_SIZE], output_chunk[CHUNK_SIZE+1];
     memset(input_chunk, 0, CHUNK_SIZE);
     memset(output_chunk, 0, CHUNK_SIZE+1);
-
     while (received!=0){
         received = socketReceive(peer, input_chunk, CHUNK_SIZE);
         if (received != ERROR){

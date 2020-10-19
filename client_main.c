@@ -10,7 +10,6 @@ int main(int argc, char** argv){
         fprintf(stderr,"Cantidad de argumentos errónea.\n");
         return ERROR;
     }
-
     Client client;
     clientInit(&client, argv[1], argv[2]);
     clientConnect(&client);

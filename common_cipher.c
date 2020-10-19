@@ -6,9 +6,6 @@
 #include <stdio.h>
 #include <string.h>
 
-#define SUCCESS 0
-#define ERROR -1
-
 #define VIGENERE_NAME "vigenere"
 #define CAESAR_NAME "cesar"
 #define RC4_NAME "rc4"
@@ -36,24 +33,26 @@ int cipherInit(Cipher *cipher, const char *method) {
         fprintf(stderr, "Error: Método inválido\n");
         return ERROR;
     }
-    cipher->position_in_key = 0;
+    CipherInfo info;
+    cipherInfoInit(&info);
+    cipher->info = info;
     return SUCCESS;
 }
 
 int cipherEncode(Cipher *cipher, const char *input, size_t length, char *output,
                  size_t buff_size, const char *key) {
     return cipher->encode(input, length, output, buff_size, key,
-                          (void*)&(cipher->position_in_key));
+                          &(cipher->info));
 }
 
 int cipherDecode(Cipher *cipher, const char *input, size_t length, char *output,
                  size_t buff_size, const char *key) {
     return cipher->decode(input, length, output, buff_size, key,
-                          (void*)&(cipher->position_in_key));
+                          &(cipher->info));
 }
 
 void cipherRelease(Cipher *cipher) {
-    //do nothing
+    cipherInfoRelease(&(cipher->info));
 }
 
 

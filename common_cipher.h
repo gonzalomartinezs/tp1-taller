@@ -1,14 +1,20 @@
 #ifndef TP1_COMMON_CIPHER_H
 #define TP1_COMMON_CIPHER_H
 #include <stdlib.h>
+#include "common_cipher_info.h"
+
+#define SUCCESS 0
+#define ERROR -1
+#define MAX_INPUT_SIZE 64
+#define VOCAB_SIZE 256
 
 typedef int (*EncryptFunc)(const char* input, size_t length, char* output,
-                            size_t buff_size, const char* key, void* aux);
+        size_t buff_size, const char* key, CipherInfo* info);
 
 typedef struct {
     EncryptFunc encode;
     EncryptFunc decode;
-    int position_in_key;
+    CipherInfo info;
 }Cipher;
 
 // Inicializa el cifrador de acuerdo al método recibido.
