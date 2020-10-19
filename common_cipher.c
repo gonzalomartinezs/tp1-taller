@@ -36,17 +36,20 @@ int cipherInit(Cipher *cipher, const char *method) {
         fprintf(stderr, "Error: Método inválido\n");
         return ERROR;
     }
+    cipher->position_in_key = 0;
     return SUCCESS;
 }
 
 int cipherEncode(Cipher *cipher, const char *input, size_t length, char *output,
                  size_t buff_size, const char *key) {
-    return cipher->encode(input, length, output, buff_size, key);
+    return cipher->encode(input, length, output, buff_size, key,
+                          (void*)&(cipher->position_in_key));
 }
 
 int cipherDecode(Cipher *cipher, const char *input, size_t length, char *output,
                  size_t buff_size, const char *key) {
-    return cipher->decode(input, length, output, buff_size, key);
+    return cipher->decode(input, length, output, buff_size, key,
+                          (void*)&(cipher->position_in_key));
 }
 
 void cipherRelease(Cipher *cipher) {

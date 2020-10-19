@@ -2,14 +2,13 @@
 #define TP1_COMMON_CIPHER_H
 #include <stdlib.h>
 
-#define METHOD_LENGTH 10
-
 typedef int (*EncryptFunc)(const char* input, size_t length, char* output,
-                            size_t buff_size, const char *key);
+                            size_t buff_size, const char* key, void* aux);
 
 typedef struct {
     EncryptFunc encode;
     EncryptFunc decode;
+    int position_in_key;
 }Cipher;
 
 // Inicializa el cifrador de acuerdo al método recibido.
