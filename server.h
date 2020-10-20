@@ -13,7 +13,7 @@ void serverInit(Server* server, const char* service);
 
 int serverBindAndListen(Server* server, int acceptance);
 
-int serverAccept(Server server, Socket *peer);
+int serverAccept(Server *server, Socket *peer);
 
 int serverReceiveAndDecrypt(Socket *peer, FILE* output_file,
                             const char* recv_method, const char* recv_key);

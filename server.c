@@ -28,8 +28,8 @@ int serverBindAndListen(Server *server, int acceptance) {
     return socketBindAndListen(&(server->socket), server->service, acceptance);
 }
 
-int serverAccept(Server server, Socket *peer) {
-    return socketAccept(&(server.socket), peer);
+int serverAccept(Server *server, Socket *peer) {
+    return socketAccept(&(server->socket), peer);
 }
 
 int serverReceiveAndDecrypt(Socket *peer, FILE *output_file,

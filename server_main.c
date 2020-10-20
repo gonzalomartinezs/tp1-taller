@@ -3,6 +3,7 @@
 
 #define SUCCESS 0
 #define ERROR 1
+#define SERVER_ERROR -1
 #define ARGS_AMOUNT 4
 
 int main(int argc, char** argv) {
@@ -17,10 +18,10 @@ int main(int argc, char** argv) {
 
     Socket peer;
     socketInit(&peer);
-    serverAccept(server, &peer);
+    serverAccept(&server, &peer);
 
     int status = serverReceiveAndDecrypt(&peer, stdout, argv[2], argv[3]);
-    if (status == SUCCESS){
+    if (status != SERVER_ERROR){
         socketRelease(&peer);
         serverDisconnectAndRelease(&server);
         return SUCCESS;

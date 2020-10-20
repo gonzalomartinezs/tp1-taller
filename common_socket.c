@@ -125,7 +125,7 @@ int socketReceive(Socket* self, void* buffer, size_t length) {
             address += received;
         }
     }
-    return valid_socket?  bytes_received: ERROR;
+    return valid_socket? bytes_received : ERROR;
 }
 
 void socketRelease(Socket* self) {

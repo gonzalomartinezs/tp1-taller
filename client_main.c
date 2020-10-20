@@ -3,6 +3,7 @@
 
 #define SUCCESS 0
 #define ERROR 1
+#define CLIENT_ERROR -1
 #define ARGS_AMOUNT 5
 
 int main(int argc, char** argv){
@@ -16,7 +17,7 @@ int main(int argc, char** argv){
 
     int status = clientEncryptAndSend(&client, stdin, argv[3], argv[4]);
 
-    if (status == SUCCESS){
+    if (status != CLIENT_ERROR){
         clientDisconnectAndRelease(&client);
         return SUCCESS;
     }
