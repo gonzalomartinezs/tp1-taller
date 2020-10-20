@@ -12,15 +12,17 @@
 
 // Asigna a 'cipher' las funciones de codificación y decodificación del método
 // Caesar.
-void _initializeWithCaesar(Cipher *cipher);
+static void _initializeWithCaesar(Cipher *cipher);
 
 // Asigna a 'cipher' las funciones de codificación y decodificación del método
 // Vigenere.
-void _initializeWithVigenere(Cipher *cipher);
+static void _initializeWithVigenere(Cipher *cipher);
 
 // Asigna a 'cipher' las funciones de codificación y decodificación del método
 // RC4.
-void _initializeWithRC4(Cipher *cipher);
+static void _initializeWithRC4(Cipher *cipher);
+
+
 
 int cipherInit(Cipher *cipher, const char *method, const char *key) {
     if (strcmp(method,CAESAR_NAME)==0){
@@ -58,7 +60,7 @@ void cipherRelease(Cipher *cipher) {
 
 //---------------------------- Funciones privadas ----------------------------//
 
-void _initializeWithCaesar(Cipher *cipher) {
+static void _initializeWithCaesar(Cipher *cipher) {
     CaesarCipher caesar;
     caesarCipherInit(&caesar);
     cipher->encode = getCaesarEncoding(&caesar);
@@ -66,7 +68,7 @@ void _initializeWithCaesar(Cipher *cipher) {
     caesarCipherRelease(&caesar);
 }
 
-void _initializeWithVigenere(Cipher *cipher) {
+static void _initializeWithVigenere(Cipher *cipher) {
     VigenereCipher vigenere;
     vigenereCipherInit(&vigenere);
     cipher->encode = getVigenereEncoding(&vigenere);
@@ -74,7 +76,7 @@ void _initializeWithVigenere(Cipher *cipher) {
     vigenereCipherRelease(&vigenere);
 }
 
-void _initializeWithRC4(Cipher *cipher) {
+static void _initializeWithRC4(Cipher *cipher) {
     RC4Cipher rc4;
     RC4CipherInit(&rc4);
     cipher->encode = getRC4Encoding(&rc4);

@@ -1,9 +1,9 @@
 #include "common_cipher_info.h"
 #include <string.h>
-#include <stdio.h>
 
 #define RC4_METHOD "rc4"
 
+// Deja el vector S lsito para la ejecución del algoritmo RC4.
 static void _KSA(CipherInfo *info, const char *key);
 
 void cipherInfoInit(CipherInfo *info, const char *method, const char *key) {

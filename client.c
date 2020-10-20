@@ -2,7 +2,6 @@
 #include "common_cipher.h"
 #include <stdio.h>
 #include <string.h>
-#include <stdbool.h>
 
 #define SUCCESS 0
 #define ERROR -1
@@ -10,11 +9,9 @@
 #define KEY_SIZE 50
 #define METHOD_SIZE 30
 
-// Carga en 'option' la opción introducida por el usuario para dicho campo
-void _extractOption(const char *recv_option, char *option);
-
 // Lee el archivo y envía mensajes encriptados de tamaño CHUNK_SIZE
-int _encodeAndSend(Client* client, Cipher* cipher, FILE* file, const char *key);
+static ssize_t _encodeAndSend(Client* client, Cipher* cipher, FILE* file,
+                       const char *key);
 
 void clientInit(Client *client, const char *host, const char *service) {
     Socket socket;
@@ -24,13 +21,13 @@ void clientInit(Client *client, const char *host, const char *service) {
     client->service = service;
 }
 
-int clientEncryptAndSend(Client *client, FILE *input_file,
-                         const char *method, const char *key) {
+ssize_t clientEncryptAndSend(Client *client, FILE *input_file,
+                             const char *method, const char *key) {
     Cipher cipher;
     if (cipherInit(&cipher, method, key) == ERROR){
         return ERROR;
     }
-    int status = _encodeAndSend(client, &cipher, input_file, key);
+    ssize_t status = _encodeAndSend(client, &cipher, input_file, key);
     cipherRelease(&cipher);
     return status;
 }
@@ -45,11 +42,10 @@ void clientDisconnectAndRelease(Client *client) {
 
 //---------------------------- Funciones privadas ----------------------------//
 
-
-
-int _encodeAndSend(Client* client, Cipher* cipher, FILE* file, const char *key){
-    int info_sent = 0;
-    int sent;
+static ssize_t _encodeAndSend(Client* client, Cipher* cipher, FILE* file,
+                       const char *key){
+    ssize_t info_sent = 0;
+    ssize_t sent;
     char input_chunk[CHUNK_SIZE], output_chunk[CHUNK_SIZE+1];
     memset(input_chunk, 0, CHUNK_SIZE);
     memset(output_chunk, 0, CHUNK_SIZE+1);

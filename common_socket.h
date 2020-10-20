@@ -1,6 +1,7 @@
 #ifndef TP1_COMMON_SOCKET_H
 #define TP1_COMMON_SOCKET_H
 #include <stdlib.h>
+#include <monetary.h>
 
 typedef struct {
     int fd;
@@ -29,12 +30,12 @@ int socketConnect(Socket* self, const char* host, const char* service);
 
 // Envía 'length' bytes del 'buffer'. Retorna la cantidad de bytes enviados
 // en caso de éxito y -1 si hubo algún error, monstrandolo por pantalla.
-int socketSend(Socket* self, const void* buffer, size_t length);
+ssize_t socketSend(Socket* self, const void* buffer, size_t length);
 
 // Recibe una cantidad de bytes menor o igual a 'length' y la carga en 'buffer'.
 // Retorna la cantidad de bytes recibidos en caso de éxito y -1
 // si hubo algún error, monstrandolo por pantalla.
-int socketReceive(Socket* self, void* buffer, size_t length);
+ssize_t socketReceive(Socket* self, void* buffer, size_t length);
 
 
 #endif

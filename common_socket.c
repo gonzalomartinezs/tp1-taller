@@ -89,13 +89,13 @@ int socketConnect(Socket* self, const char* host, const char* service) {
 }
 
 
-int socketSend(Socket* self, const void* buffer, size_t length) {
+ssize_t socketSend(Socket* self, const void* buffer, size_t length) {
     bool error_at_sending = false;
     uint8_t* address = (uint8_t*)buffer;  // casteo para realizar operaciones
-    int bytes_sent = 0;                   // ariméticas con dicha  dirección
+    ssize_t bytes_sent = 0;                   // ariméticas con dicha  dirección
 
     while (bytes_sent < length && !error_at_sending) {
-        int sent = send(self->fd, address,length-bytes_sent, MSG_NOSIGNAL);
+        ssize_t sent = send(self->fd, address,length-bytes_sent, MSG_NOSIGNAL);
         if (sent == ERROR) {
             fprintf(stderr,"Error: %s\n", strerror(errno));
             error_at_sending = true;
@@ -107,13 +107,13 @@ int socketSend(Socket* self, const void* buffer, size_t length) {
     return error_at_sending? ERROR : bytes_sent;
 }
 
-int socketReceive(Socket* self, void* buffer, size_t length) {
+ssize_t socketReceive(Socket* self, void* buffer, size_t length) {
     bool valid_socket = true, zero_bytes_recv = false;
     uint8_t* address = (uint8_t*)buffer;  // casteo para realizar operaciones
-    int bytes_received = 0;               // ariméticas con dicha  dirección
+    ssize_t bytes_received = 0;               // ariméticas con dicha  dirección
 
     while (bytes_received < length && valid_socket && !zero_bytes_recv) {
-        int received = recv(self->fd, address,
+        ssize_t received = recv(self->fd, address,
                         length - bytes_received, MSG_NOSIGNAL);
         if (received == ERROR) {
             fprintf(stderr, "Error: %s\n", strerror(errno));

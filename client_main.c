@@ -17,7 +17,7 @@ int main(int argc, char** argv){
         clientInit(&client, host, service);
         clientConnect(&client);
 
-        int status = clientEncryptAndSend(&client, stdin, method, key);
+        ssize_t status = clientEncryptAndSend(&client, stdin, method, key);
 
         if (status != CLIENT_ERROR){
             clientDisconnectAndRelease(&client);

@@ -7,18 +7,21 @@
 // Post: toma el mensaje de 'input' y coloca su codificación
 //       RC4 en 'output' usando 'key' como clave.
 //       Retorna 0 en caso de éxito, 1 caso contrario.
-int _rc4Encode(const char *input, size_t length, char *output, size_t buff_size,
-               const char *key, CipherInfo *info);
+static int _rc4Encode(const char *input, size_t length, char *output,
+                      size_t buff_size, const char *key, CipherInfo *info);
 
 // Pre: el buffer size de 'output' es mayor o igual al de 'input'.
 // Post: toma el mensaje codificado 'input' y coloca su
 //       decodificación RC4 en 'output' usando 'key' como clave.
 //       Retorna 0 en caso de éxito, 1 caso contrario.
-int _rc4Decode(const char *input, size_t length, char *output, size_t buff_size,
-               const char *key, CipherInfo *info);
+static int _rc4Decode(const char *input, size_t length, char *output,
+                      size_t buff_size, const char *key, CipherInfo *info);
 
+// Genera la clave dinámica de tamanio 'length' a utilizar durante el cifrado
+// cargandola en 'key_stream'
 static void _generateKeyStream(CipherInfo *info, char *key_stream, int length);
 
+// Codifica el 'input' utilizando la 'key' y coloca el resultado en 'output'.
 static void _encode(const char *input, char* output, const char *key,
                     int length);
 
@@ -44,8 +47,8 @@ void RC4CipherRelease(RC4Cipher *rc4) {
 
 //---------------------------- Funciones privadas ----------------------------//
 
-int _rc4Encode(const char *input, size_t length, char *output, size_t buff_size,
-               const char *key, CipherInfo *info) {
+static int _rc4Encode(const char *input, size_t length, char *output,
+                      size_t buff_size, const char *key, CipherInfo *info) {
     if (length+1 > buff_size){
         fprintf(stderr, "Error: tamaño insuficiente de buffer.");
         return INSUF_BUFF_SIZE;
@@ -57,8 +60,8 @@ int _rc4Encode(const char *input, size_t length, char *output, size_t buff_size,
     return SUCCESS;
 }
 
-int _rc4Decode(const char *input, size_t length, char *output, size_t buff_size,
-               const char *key, CipherInfo *info) {
+static int _rc4Decode(const char *input, size_t length, char *output,
+                      size_t buff_size, const char *key, CipherInfo *info) {
     return _rc4Encode(input, length, output, buff_size, key, info);
 }
 

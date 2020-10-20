@@ -5,7 +5,6 @@
 #define SUCCESS 0
 #define ERROR 1
 #define SERVER_ERROR -1
-#define ARGS_AMOUNT 4
 
 int main(int argc, char** argv) {
     char service[SERVICE_SIZE];
@@ -16,18 +15,14 @@ int main(int argc, char** argv) {
         Server server;
         serverInit(&server, service);
         serverBindAndListen(&server, 5);
+        serverAccept(&server);
 
-        Socket peer;
-        socketInit(&peer);
-        serverAccept(&server, &peer);
+        ssize_t status = serverReceiveAndDecrypt(&server, stdout, method, key);
+        serverDisconnectAndRelease(&server);
 
-        int status = serverReceiveAndDecrypt(&peer, stdout, method, key);
-        if (status != SERVER_ERROR){
-            socketRelease(&peer);
-            serverDisconnectAndRelease(&server);
+        if (status != SERVER_ERROR) {
             return SUCCESS;
         }
-        serverDisconnectAndRelease(&server);
     }
     return ERROR;
 }
