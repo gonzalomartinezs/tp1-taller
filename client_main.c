@@ -1,25 +1,28 @@
 #include "client.h"
 #include <stdio.h>
+#include "common_command_parser.h"
 
 #define SUCCESS 0
 #define ERROR 1
 #define CLIENT_ERROR -1
-#define ARGS_AMOUNT 5
 
 int main(int argc, char** argv){
-    if (argc != ARGS_AMOUNT){
-        fprintf(stderr,"Cantidad de argumentos errónea.\n");
-        return ERROR;
-    }
-    Client client;
-    clientInit(&client, argv[1], argv[2]);
-    clientConnect(&client);
+    char host[HOST_SIZE];
+    char service[SERVICE_SIZE];
+    char method[METHOD_SIZE];
+    char key[KEY_SIZE];
 
-    int status = clientEncryptAndSend(&client, stdin, argv[3], argv[4]);
+    if (commandParserClient(argc, argv, host, service, method, key) == SUCCESS){
+        Client client;
+        clientInit(&client, host, service);
+        clientConnect(&client);
 
-    if (status != CLIENT_ERROR){
-        clientDisconnectAndRelease(&client);
-        return SUCCESS;
+        int status = clientEncryptAndSend(&client, stdin, method, key);
+
+        if (status != CLIENT_ERROR){
+            clientDisconnectAndRelease(&client);
+            return SUCCESS;
+        }
     }
     return ERROR;
 }

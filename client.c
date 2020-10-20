@@ -25,12 +25,7 @@ void clientInit(Client *client, const char *host, const char *service) {
 }
 
 int clientEncryptAndSend(Client *client, FILE *input_file,
-                         const char *recv_method, const char *recv_key) {
-    char key[KEY_SIZE], method[METHOD_SIZE];
-    memset(key, 0, KEY_SIZE);
-    memset(method, 0, METHOD_SIZE);
-    _extractOption(recv_key, key);
-    _extractOption(recv_method, method);
+                         const char *method, const char *key) {
     Cipher cipher;
     if (cipherInit(&cipher, method, key) == ERROR){
         return ERROR;
@@ -50,19 +45,7 @@ void clientDisconnectAndRelease(Client *client) {
 
 //---------------------------- Funciones privadas ----------------------------//
 
-void _extractOption(const char *recv_option, char *option){
-    bool eq_sign_found = false;
-    int j = 0;
-    int length = (int)strlen(recv_option);
-    for (int i=0; i<length; i++){
-        if (eq_sign_found && recv_option[i] != '"'){
-            option[j] = recv_option[i];
-            j++;
-        } else if (recv_option[i]=='='){
-            eq_sign_found = true;
-        }
-    }
-}
+
 
 int _encodeAndSend(Client* client, Cipher* cipher, FILE* file, const char *key){
     int info_sent = 0;

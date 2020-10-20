@@ -9,9 +9,6 @@
 #define KEY_SIZE 50
 #define METHOD_SIZE 30
 
-// Carga en 'option' la opción introducida por el usuario para dicho campo
-static void _extractOption(const char *recv_option, char *option);
-
 // Recibe y decodifica los mensajes recibidos, escribiendo el resultado en
 // 'output_file'
 static int _receiveAndDecode(Socket *peer, Cipher *cipher, FILE *output_file,
@@ -33,12 +30,7 @@ int serverAccept(Server *server, Socket *peer) {
 }
 
 int serverReceiveAndDecrypt(Socket *peer, FILE *output_file,
-                            const char *recv_method, const char *recv_key) {
-    char key[KEY_SIZE], method[METHOD_SIZE];
-    memset(key, 0, KEY_SIZE);
-    memset(method, 0, METHOD_SIZE);
-    _extractOption(recv_key, key);
-    _extractOption(recv_method, method);
+                            const char *method, const char *key) {
     Cipher cipher;
     if (cipherInit(&cipher, method, key) == ERROR){
         return ERROR;
@@ -54,20 +46,6 @@ void serverDisconnectAndRelease(Server *server) {
 
 
 //---------------------------- Funciones privadas ----------------------------//
-static void _extractOption(const char *recv_option, char *option){
-    bool eq_sign_found = false;
-    int j = 0;
-    int length = (int)strlen(recv_option);
-    for (int i=0; i<length; i++){
-        if (eq_sign_found && recv_option[i] != '"'){
-            option[j] = recv_option[i];
-            j++;
-        } else if (recv_option[i]=='='){
-            eq_sign_found = true;
-        }
-    }
-}
-
 
 static int _receiveAndDecode(Socket *peer, Cipher *cipher, FILE *output_file,
                       const char *key) {
