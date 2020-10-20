@@ -3,7 +3,6 @@
 #include <stdio.h>
 
 #define INSUF_BUFF_SIZE -1
-
 // Pre: el buffer size de 'output' es mayor o igual al de 'input'.
 // Post: toma el mensaje de 'input' y coloca su codificación
 //       RC4 en 'output' usando 'key' como clave.
@@ -64,8 +63,8 @@ int _rc4Decode(const char *input, size_t length, char *output, size_t buff_size,
 }
 
 static void _generateKeyStream(CipherInfo *info, char *key_stream, int length){
-    int i = 0;
-    int j = 0;
+    int i = cipherInfoGetVectorSIndexes(info)[0];
+    int j = cipherInfoGetVectorSIndexes(info)[1];
     for (int k=0; k<length; k++){
         i = (i + 1)%VOCAB_SIZE;
         j = (j + cipherInfoGetSVectorInIndex(info, i)) % VOCAB_SIZE;
@@ -74,6 +73,7 @@ static void _generateKeyStream(CipherInfo *info, char *key_stream, int length){
                 cipherInfoGetSVectorInIndex(info, j)) % VOCAB_SIZE;
         key_stream[k] = (char)cipherInfoGetSVectorInIndex(info, a);
     }
+    cipherInfoSetVectorSIndexes(info, i, j);
 }
 
 
