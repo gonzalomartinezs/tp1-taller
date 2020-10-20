@@ -6,7 +6,6 @@
 typedef struct {
     int pos_in_key;
     int S[VECTOR_SIZE];
-
 }CipherInfo;
 
 // Inicializa la estructura con todos los valores en 0.
