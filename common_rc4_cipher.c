@@ -18,11 +18,8 @@ int _rc4Encode(const char *input, size_t length, char *output, size_t buff_size,
 int _rc4Decode(const char *input, size_t length, char *output, size_t buff_size,
                const char *key, CipherInfo *info);
 
-static void _KSA(CipherInfo *info, const char *original_key);
-static void _PRGA(CipherInfo *info, char *key_stream, int length);
-static void
-_generateKeyStream(char *key_stream, const char *original_key, int length,
-                   CipherInfo *info);
+static void _generateKeyStream(CipherInfo *info, char *key_stream, int length);
+
 static void _encode(const char *input, char* output, const char *key,
                     int length);
 
@@ -56,7 +53,7 @@ int _rc4Encode(const char *input, size_t length, char *output, size_t buff_size,
     }
     char key_stream[MAX_INPUT_SIZE];
     memset(key_stream, 0, MAX_INPUT_SIZE);
-    _generateKeyStream(key_stream, key, length, info);
+    _generateKeyStream(info, key_stream, length);
     _encode(input, output, key_stream, length);
     return SUCCESS;
 }
@@ -66,24 +63,7 @@ int _rc4Decode(const char *input, size_t length, char *output, size_t buff_size,
     return _rc4Encode(input, length, output, buff_size, key, info);
 }
 
-
-static void _KSA(CipherInfo *info, const char *key){
-    int key_length = (int)strlen(key);
-    if (key_length != 0) {
-        int i = 0;
-        int position;
-        int position_in_key = cipherInfoGetPositionInKey(info);
-        for (int j = 0; j < VECTOR_SIZE; j++) {
-            position = (position_in_key + j) % key_length;
-            i = (i + cipherInfoGetSVectorInIndex(info, j) + key[position]) %
-                VECTOR_SIZE;
-            cipherInfoSwapSVector(info, i, j);
-        }
-        cipherInfoSetPositionInKey(info, (position + 1) % key_length);
-    }
-}
-
-static void _PRGA(CipherInfo *info, char *key_stream, int length){
+static void _generateKeyStream(CipherInfo *info, char *key_stream, int length){
     int i = 0;
     int j = 0;
     for (int k=0; k<length; k++){
@@ -96,11 +76,6 @@ static void _PRGA(CipherInfo *info, char *key_stream, int length){
     }
 }
 
-static void _generateKeyStream(char *key_stream, const char *original_key,
-                               int length, CipherInfo *info) {
-    _KSA(info, original_key);
-    _PRGA(info, key_stream, length);
-}
 
 static void _encode(const char *input, char* output, const char *key,
                     int length){

@@ -32,7 +32,7 @@ int clientEncryptAndSend(Client *client, FILE *input_file,
     _extractOption(recv_key, key);
     _extractOption(recv_method, method);
     Cipher cipher;
-    if (cipherInit(&cipher, method) == ERROR){
+    if (cipherInit(&cipher, method, recv_key) == ERROR){
         return ERROR;
     }
     int status = _encodeAndSend(client, &cipher, input_file, key);

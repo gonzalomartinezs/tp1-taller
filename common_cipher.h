@@ -19,7 +19,7 @@ typedef struct {
 
 // Inicializa el cifrador de acuerdo al método recibido.
 // Retorna 0 en caso de éxito y -1 si el método es inválido.
-int cipherInit(Cipher* cipher, const char* method);
+int cipherInit(Cipher *cipher, const char *method, const char *key);
 
 // Pre: el buffer size de 'output' es mayor o igual al de 'input'.
 // Post: toma el mensaje codificado 'input' y coloca su

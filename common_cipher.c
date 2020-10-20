@@ -22,7 +22,7 @@ void _initializeWithVigenere(Cipher *cipher);
 // RC4.
 void _initializeWithRC4(Cipher *cipher);
 
-int cipherInit(Cipher *cipher, const char *method) {
+int cipherInit(Cipher *cipher, const char *method, const char *key) {
     if (strcmp(method,CAESAR_NAME)==0){
         _initializeWithCaesar(cipher);
     } else if (strcmp(method,VIGENERE_NAME)==0){
@@ -34,7 +34,7 @@ int cipherInit(Cipher *cipher, const char *method) {
         return ERROR;
     }
     CipherInfo info;
-    cipherInfoInit(&info);
+    cipherInfoInit(&info, method, key);
     cipher->info = info;
     return SUCCESS;
 }

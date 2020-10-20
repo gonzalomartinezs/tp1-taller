@@ -1,10 +1,18 @@
 #include "common_cipher_info.h"
-#define ERROR -1
+#include <string.h>
+#define RC4_METHOD "rc4"
 
-void cipherInfoInit(CipherInfo *info) {
+static void _KSA(CipherInfo *info, const char *key);
+
+void cipherInfoInit(CipherInfo *info, const char *method, const char *key) {
     info->pos_in_key = 0;
-    for (int i=0; i<VECTOR_SIZE; i++){
-        info->S[i] = i;
+    if (strcmp(method, RC4_METHOD) == 0){
+        for (int i=0; i<VECTOR_SIZE; i++){
+            info->S[i] = i;
+        }
+        _KSA(info, key);
+    } else {
+        memset(info->S, 0, VECTOR_SIZE*sizeof(int));
     }
 }
 
@@ -30,3 +38,16 @@ void cipherInfoRelease(CipherInfo *info) {
     //do nothing
 }
 
+//---------------------------- Funciones privadas ----------------------------//
+
+static void _KSA(CipherInfo *info, const char *key){
+    int key_length = (int)strlen(key);
+    if (key_length != 0) {
+        int i = 0;
+        for (int j = 0; j < VECTOR_SIZE; j++) {
+            i = (i + cipherInfoGetSVectorInIndex(info, j) + key[j%key_length]) %
+                VECTOR_SIZE;
+            cipherInfoSwapSVector(info, i, j);
+        }
+    }
+}

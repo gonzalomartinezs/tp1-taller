@@ -6,10 +6,11 @@
 typedef struct {
     int pos_in_key;
     int S[VECTOR_SIZE];
+
 }CipherInfo;
 
 // Inicializa la estructura con todos los valores en 0.
-void cipherInfoInit(CipherInfo* info);
+void cipherInfoInit(CipherInfo *info, const char *method, const char *key);
 
 // Devuelve la próxima posición de la key que debe procesar el cifrador.
 int cipherInfoGetPositionInKey(CipherInfo* info);

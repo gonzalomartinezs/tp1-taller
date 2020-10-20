@@ -40,7 +40,7 @@ int serverReceiveAndDecrypt(Socket *peer, FILE *output_file,
     _extractOption(recv_key, key);
     _extractOption(recv_method, method);
     Cipher cipher;
-    if (cipherInit(&cipher, method) == ERROR){
+    if (cipherInit(&cipher, method, recv_key) == ERROR){
         return ERROR;
     }
     int status = _receiveAndDecode(peer, &cipher, output_file, key);
