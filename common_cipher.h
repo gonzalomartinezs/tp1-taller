@@ -11,6 +11,7 @@
 typedef int (*EncryptFunc)(const char* input, size_t length, char* output,
         size_t buff_size, const char* key, CipherInfo* info);
 
+// Los artibutos son privados
 typedef struct {
     EncryptFunc encode;
     EncryptFunc decode;

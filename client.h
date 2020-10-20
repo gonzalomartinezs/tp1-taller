@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include "common_socket.h"
 
+// Los artibutos son privados
 typedef struct{
     Socket socket;
     const char* host;

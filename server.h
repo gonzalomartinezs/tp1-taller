@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 
+// Los artibutos son privados
 typedef struct{
     Socket socket;
     Socket peer;

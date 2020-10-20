@@ -4,6 +4,7 @@
 #define VECTOR_SIZE 256
 #define INDEXES_AMOUNT 2
 
+// Los artibutos son privados
 typedef struct {
     int pos_in_key;
     int S[VECTOR_SIZE];

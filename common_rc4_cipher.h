@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include "common_cipher.h"
 
+// Los artibutos son privados
 typedef struct{
     EncryptFunc encode;
     EncryptFunc decode;

@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <monetary.h>
 
+// Los artibutos son privados
 typedef struct {
     int fd;
 }Socket;
