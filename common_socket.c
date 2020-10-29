@@ -114,7 +114,7 @@ ssize_t socketReceive(Socket* self, void* buffer, size_t length) {
 
     while (bytes_received < length && valid_socket && !zero_bytes_recv) {
         ssize_t received = recv(self->fd, address,
-                        length - bytes_received, MSG_NOSIGNAL);
+                                length - bytes_received, 0);
         if (received == ERROR) {
             fprintf(stderr, "Error: %s\n", strerror(errno));
             valid_socket = false;
