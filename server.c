@@ -14,12 +14,8 @@ static ssize_t _receiveAndDecode(Server *server, Cipher *cipher,
                                  FILE *output_file, const char *key);
 
 void serverInit(Server *server, const char *service) {
-    Socket socket;
-    Socket peer;
-    socketInit(&socket);
-    socketInit(&peer);
-    server->socket = socket;
-    server->peer = peer;
+    socketInit(&server->socket);
+    socketInit(&server->peer);
     server->service = service;
     server->peer_closed = true;
 }
@@ -68,7 +64,7 @@ static ssize_t _receiveAndDecode(Server *server, Cipher *cipher,
         received = socketReceive(&(server->peer), input_chunk, CHUNK_SIZE);
         if (received != ERROR){
             status = cipherDecode(cipher, input_chunk, received, output_chunk,
-                                  CHUNK_SIZE+1, key);
+                                  CHUNK_SIZE+1);
             if (status != ERROR){
                 fwrite(output_chunk, sizeof(char), received, output_file);
             }

@@ -14,9 +14,7 @@ static ssize_t _encodeAndSend(Client* client, Cipher* cipher, FILE* file,
                        const char *key);
 
 void clientInit(Client *client, const char *host, const char *service) {
-    Socket socket;
-    socketInit(&socket);
-    client->socket = socket;
+    socketInit(&client->socket);
     client->host = host;
     client->service = service;
 }
@@ -52,7 +50,7 @@ static ssize_t _encodeAndSend(Client* client, Cipher* cipher, FILE* file,
     while (!feof(file)){
         size_t read = fread(input_chunk, sizeof(char), CHUNK_SIZE, file);
         int status = cipherEncode(cipher, input_chunk, read, output_chunk,
-                              CHUNK_SIZE+1, key);
+                              CHUNK_SIZE+1);
 
         if (status != ERROR) {
             sent = socketSend(&(client->socket), output_chunk, read);

@@ -2,38 +2,46 @@
 #include <string.h>
 #include <stdio.h>
 
+#define SUCCESS 0
 #define INSUF_BUFF_SIZE -1
+#define VOCAB_SIZE 256
+#define MAX_INPUT_SIZE 64
 
 // Repite la clave hasta alcanzar la longitd del mensaje.
-static void _extendKey(const char *key, int length, char *extended_key,
-                CipherInfo *info);
-
-// Pre: el buffer size de 'output' es mayor o igual al de 'input'.
-// Post: toma el mensaje de 'input' y coloca su codificación
-//       Vigenere en 'output' usando 'key' como clave.
-//       Retorna 0 en caso de éxito, 1 caso contrario.
-static int _vigenereEncode(const char *input, size_t length, char *output,
-                    size_t buff_size, const char *key, CipherInfo *info);
-
-// Pre: el buffer size de 'output' es mayor o igual al de 'input'.
-// Post: toma el mensaje codificado 'input' y coloca su
-//       decodificación Vigenere en 'output' usando 'key' como clave.
-//       Retorna 0 en caso de éxito, 1 caso contrario.
-static int _vigenereDecode(const char *input, size_t length, char *output,
-                    size_t buff_size, const char *key, CipherInfo *info);
+static void _extendKey(VigenereCipher* cipher, int length, char *extended_key);
 
 
-void vigenereCipherInit(VigenereCipher *vigenere) {
-    vigenere->encode = &_vigenereEncode;
-    vigenere->decode = &_vigenereDecode;
+void vigenereCipherInit(VigenereCipher *cipher, const char *key) {
+    cipher->key = key;
+    cipher->position_in_key = 0;
 }
 
-EncryptFunc getVigenereEncoding(VigenereCipher *vigenere) {
-    return vigenere->encode;
+int vigenereCipherEncode(VigenereCipher* cipher, const char *input,
+                         size_t length, char *output, size_t buff_size) {
+    if (length + 1 > buff_size){
+        fprintf(stderr, "Error: tamaño insuficiente de buffer.");
+        return INSUF_BUFF_SIZE;
+    }
+    char extended_key[MAX_INPUT_SIZE];
+    _extendKey(cipher, length, extended_key);
+    for (int i=0; i<length; i++){
+        output[i] = (char)((input[i] + extended_key[i])%VOCAB_SIZE);
+    }
+    return SUCCESS;
 }
 
-EncryptFunc getVigenereDecoding(VigenereCipher *vigenere) {
-    return vigenere->decode;
+int vigenereCipherDecode(VigenereCipher* cipher, const char *input,
+                         size_t length, char *output, size_t buff_size) {
+    if (length + 1 > buff_size) {
+        fprintf(stderr, "Error: tamaño insuficiente de buffer.");
+        return INSUF_BUFF_SIZE;
+    }
+    char extended_key[MAX_INPUT_SIZE];
+    _extendKey(cipher, length, extended_key);
+    for (int i=0; i<length; i++) {
+        output[i] = (char) ((input[i] - extended_key[i]) % VOCAB_SIZE);
+    }
+    return SUCCESS;
 }
 
 void vigenereCipherRelease(VigenereCipher *vigenere) {
@@ -43,47 +51,16 @@ void vigenereCipherRelease(VigenereCipher *vigenere) {
 
 //---------------------------- Funciones privadas ----------------------------//
 
-static int _vigenereEncode(const char *input, size_t length, char *output,
-                    size_t buff_size, const char *key, CipherInfo *info) {
-    if (length+1 > buff_size){
-        fprintf(stderr, "Error: tamaño insuficiente de buffer.");
-        return INSUF_BUFF_SIZE;
-    }
-    char extended_key[MAX_INPUT_SIZE];
-    _extendKey(key, length, extended_key, info);
-    for (int i=0; i<length; i++){
-        output[i] = (char)((input[i]+extended_key[i])%VOCAB_SIZE);
-    }
-    return SUCCESS;
-}
-
-static int _vigenereDecode(const char *input, size_t length, char *output,
-                    size_t buff_size, const char *key, CipherInfo *info) {
-    if (length+1 > buff_size){
-        fprintf(stderr, "Error: tamaño insuficiente de buffer.");
-        return INSUF_BUFF_SIZE;
-    }
-    char extended_key[MAX_INPUT_SIZE];
-    _extendKey(key, length, extended_key, info);
-    for (int i=0; i<length; i++){
-        output[i] = (char)((input[i]-extended_key[i])%VOCAB_SIZE);
-    }
-    return SUCCESS;
-}
-
-
-static void _extendKey(const char *key, int length, char *extended_key,
-                CipherInfo *info) {
+static void _extendKey(VigenereCipher* cipher, int length, char *extended_key){
     memset(extended_key, 0, MAX_INPUT_SIZE);
 
-    int key_length = (int)strlen(key);
+    int key_length = (int)strlen(cipher->key);
     if (key_length != 0){
         int position;
-        int position_in_key = cipherInfoGetPositionInKey(info);
         for (int i=0; i<length; i++){
-            position = (position_in_key + i) % key_length;
-            extended_key[i] = key[position];
+            position = (cipher->position_in_key + i) % key_length;
+            extended_key[i] = cipher->key[position];
         }
-        cipherInfoSetPositionInKey(info, (position + 1) % key_length);
+       cipher->position_in_key = (position + 1) % key_length;
     }
 }

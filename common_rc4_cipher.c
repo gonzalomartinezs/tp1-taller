@@ -2,81 +2,84 @@
 #include <string.h>
 #include <stdio.h>
 
+#define SUCCESS 0
 #define INSUF_BUFF_SIZE -1
-// Pre: el buffer size de 'output' es mayor o igual al de 'input'.
-// Post: toma el mensaje de 'input' y coloca su codificación
-//       RC4 en 'output' usando 'key' como clave.
-//       Retorna 0 en caso de éxito, 1 caso contrario.
-static int _rc4Encode(const char *input, size_t length, char *output,
-                      size_t buff_size, const char *key, CipherInfo *info);
+#define VOCAB_SIZE 256
+#define MAX_INPUT_SIZE 64
 
-// Pre: el buffer size de 'output' es mayor o igual al de 'input'.
-// Post: toma el mensaje codificado 'input' y coloca su
-//       decodificación RC4 en 'output' usando 'key' como clave.
-//       Retorna 0 en caso de éxito, 1 caso contrario.
-static int _rc4Decode(const char *input, size_t length, char *output,
-                      size_t buff_size, const char *key, CipherInfo *info);
+// Deja el vector S lsito para la ejecución del algoritmo RC4.
+static void _KSA(RC4Cipher* rc4, const char* key);
 
 // Genera la clave dinámica de tamanio 'length' a utilizar durante el cifrado
 // cargandola en 'key_stream'
-static void _generateKeyStream(CipherInfo *info, char *key_stream, int length);
+static void _generateKeyStream(RC4Cipher *rc4, char *key_stream, int length);
 
 // Codifica el 'input' utilizando la 'key' y coloca el resultado en 'output'.
 static void _encode(const char *input, char* output, const char *key,
                     int length);
 
+// Intercamabia los valores del vector en los indices i y j.
+static void _swap(int* vector, int i, int j);
 
 
-void RC4CipherInit(RC4Cipher *rc4) {
-    rc4->encode = &_rc4Encode;
-    rc4->decode = &_rc4Decode;
+void rc4CipherInit(RC4Cipher *rc4, const char* key) {
+    rc4->key = key;
+    rc4->index_1 = 0;
+    rc4->index_2 = 0;
+    for (int i=0; i<VECTOR_SIZE; i++){
+        rc4->S[i] = i;
+    }
+    _KSA(rc4, key);
 }
 
-EncryptFunc getRC4Encoding(RC4Cipher *rc4) {
-    return rc4->encode;
-}
-
-EncryptFunc getRC4Decoding(RC4Cipher *rc4) {
-    return rc4->decode;
-}
-
-void RC4CipherRelease(RC4Cipher *rc4) {
-    //do nothing;
-}
-
-
-//---------------------------- Funciones privadas ----------------------------//
-
-static int _rc4Encode(const char *input, size_t length, char *output,
-                      size_t buff_size, const char *key, CipherInfo *info) {
+int rc4CipherEncode(RC4Cipher* rc4, const char *input, size_t length,
+                    char *output, size_t buff_size) {
     if (length+1 > buff_size){
         fprintf(stderr, "Error: tamaño insuficiente de buffer.");
         return INSUF_BUFF_SIZE;
     }
     char key_stream[MAX_INPUT_SIZE];
     memset(key_stream, 0, MAX_INPUT_SIZE);
-    _generateKeyStream(info, key_stream, length);
+    _generateKeyStream(rc4, key_stream, length);
     _encode(input, output, key_stream, length);
     return SUCCESS;
 }
 
-static int _rc4Decode(const char *input, size_t length, char *output,
-                      size_t buff_size, const char *key, CipherInfo *info) {
-    return _rc4Encode(input, length, output, buff_size, key, info);
+int rc4CipherDecode(RC4Cipher* rc4, const char *input, size_t length,
+                    char *output, size_t buff_size){
+    return rc4CipherEncode(rc4, input, length, output, buff_size);
 }
 
-static void _generateKeyStream(CipherInfo *info, char *key_stream, int length){
-    int i = cipherInfoGetVectorSIndexes(info)[0];
-    int j = cipherInfoGetVectorSIndexes(info)[1];
+void rc4CipherRelease(RC4Cipher *rc4) {
+    //do nothing;
+}
+
+
+//---------------------------- Funciones privadas ----------------------------//
+
+static void _KSA(RC4Cipher* rc4, const char* key){
+    int key_length = (int)strlen(key);
+    if (key_length != 0) {
+        int i = 0;
+        for (int j = 0; j < VECTOR_SIZE; j++) {
+            i = (i + rc4->S[j] + key[j%key_length]) % VECTOR_SIZE;
+            _swap(rc4->S, i, j);
+        }
+    }
+}
+
+static void _generateKeyStream(RC4Cipher *rc4, char *key_stream, int length){
+    int i = rc4->index_1;
+    int j = rc4->index_2;
     for (int k=0; k<length; k++){
         i = (i + 1)%VOCAB_SIZE;
-        j = (j + cipherInfoGetSVectorInIndex(info, i)) % VOCAB_SIZE;
-        cipherInfoSwapSVector(info, i, j);
-        int a = (cipherInfoGetSVectorInIndex(info, i) +
-                cipherInfoGetSVectorInIndex(info, j)) % VOCAB_SIZE;
-        key_stream[k] = (char)cipherInfoGetSVectorInIndex(info, a);
+        j = (j + rc4->S[i]) % VOCAB_SIZE;
+        _swap(rc4->S, i, j);
+        int a = (rc4->S[i] + rc4->S[j]) % VOCAB_SIZE;
+        key_stream[k] = (char)(rc4->S[a]);
     }
-    cipherInfoSetVectorSIndexes(info, i, j);
+    rc4->index_1 = i;
+    rc4->index_2 = j;
 }
 
 
@@ -87,4 +90,8 @@ static void _encode(const char *input, char* output, const char *key,
     }
 }
 
-
+static void _swap(int* vector, int i, int j){
+    int aux = vector[i];
+    vector[i] = vector[j];
+    vector[j] = aux;
+}
