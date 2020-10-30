@@ -99,6 +99,17 @@ En esta sección se indican algunas suposiciones realizadas y decisiones tomadas
 
 - Si bien la implementación del server se encuentra diseñada para aceptar un único cliente en simultáneo, algunas funciones apuntan al hecho de que se puedan aceptar varios clientes (como serverAccept). Esto se debe a que si en un futuro se desea realizar dicha modificación, no sea necesario realizar cambios en toda la biblioteca.
 
+### Fixes
+Para la reentrega del presente trabajo se realizó la siguiente modificación del modelo. Ahora el TDA Cipher contiene una instancia de cada TDA de cifrado (Caesar, RC4 y Vigenere) y el nombre del método a utilizar, en base al cual se elige a qué función de cifrado llamar. Además, dichos TDAs de cifrado ya no dependen de `CipherInfo`, sino que cada uno de ellos contiene toda la información necesaria para realizar las operaciones de codificación/decodificación.
+
+De esta manera, el diagrama UML actualizado resulta como se muestra a continuación.
+
+![alt text][cifradores_fixed]
+
+Asimismo, al actualizar el esquema de la relación cliente-servidor se observa lo siguiente.
+
+![alt text][cliente-servidor_fixed]
+
 ## Conclusión
 
 Este trabajo resultó de gran ayuda para comprender el funcionamiento de un socket y de un esquema cliente servidor. Además, el hecho de haberlo realizado en el lenguaje de progrmación C permite comprender en buena medida cómo funciona este aspecto básico y fundamental para un ingeniero informático/licenciado y que, a día de hoy, forma parte de la vida cotidiana de todos.
@@ -106,6 +117,8 @@ Este trabajo resultó de gran ayuda para comprender el funcionamiento de un sock
 
 
 [cliente-servidor]:https://github.com/gonzalomartinezs/tp1-taller/blob/master/img/cl-sv.png
+[cliente-servidor_fixed]:https://github.com/gonzalomartinezs/tp1-taller/blob/master/img/cl-sv_fixed.png
 [cifradores]:https://github.com/gonzalomartinezs/tp1-taller/blob/master/img/cifradores.png
+[cifradores_fixed]:https://github.com/gonzalomartinezs/tp1-taller/blob/master/img/cifradores_fixed.png
 [send]:https://github.com/gonzalomartinezs/tp1-taller/blob/master/img/send.png
 [recv]:https://github.com/gonzalomartinezs/tp1-taller/blob/master/img/recv.png
